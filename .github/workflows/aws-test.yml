@@ -1,0 +1,25 @@
+name: Test AWS OIDC Connection 🔐
+
+on:
+  workflow_dispatch: # Allows us to trigger this test manually from GitHub
+
+permissions:
+  id-token: write  # 🔑 Critical: Required for requesting the JWT from AWS
+  contents: read   # Required to check out code
+
+jobs:
+  test-connection:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code 📂
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials 🤖
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::336090301658:role/github-actions-deep-researcher-dev
+          aws-region: us-east-1
+
+      - name: Verify AWS Identity 🕵️‍♂️
+        run: |
+          aws sts get-caller-identity
